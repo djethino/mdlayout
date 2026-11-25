@@ -1,5 +1,7 @@
 # @asymptomatik/mdlayout
 
+On npm: https://www.npmjs.com/package/@asymptomatik/mdlayout
+
 Spatial layout extension for Markdown. Position blocks, images, and styled content using a simple hint syntax.
 
 **Zero dependencies** -- pure JavaScript, no DOM, no Node APIs.

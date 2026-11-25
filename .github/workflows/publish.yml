@@ -1,6 +1,7 @@
 name: Publish to npm
 
-# On a tag v<version>: test, then publish @asymptomatik/mdlayout with npm trusted publishing (no token; provenance).
+# On a tag v<version>: test, then stage @asymptomatik/mdlayout with npm trusted publishing (no token; provenance).
+# The staged version is public only once a maintainer approves it with 2FA (npm stage approve, or npmjs.com).
 # The tag must match package.json. The VS Code extension (vscode/) is published from the maintainer's machine.
 
 on:
@@ -16,14 +17,19 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
+          package-manager-cache: false
       - name: The tag matches package.json
         run: test "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}"
+      - name: npm with staged publishing, pinned
+        run: npm install --global npm@11.21.2
       - name: Tests
         run: node --test "test/*.test.js"
-      - name: Publish
-        run: npm publish --access public --provenance
+      - name: Stage for approval
+        run: npm stage publish --access public --provenance

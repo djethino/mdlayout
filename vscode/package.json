@@ -2,7 +2,7 @@
   "name": "mdlayout",
   "displayName": "mdlayout — Markdown layout",
   "description": "Spatial layout for Markdown in the preview: blocks side by side, images and videos with layout hints, styled text — the mdlayout syntax.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "asymptomatik",
   "author": "ASymptOmatik",
   "license": "MIT",
