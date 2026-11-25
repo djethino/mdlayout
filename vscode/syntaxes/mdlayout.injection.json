@@ -1,0 +1,41 @@
+{
+  "scopeName": "markdown.mdlayout.injection",
+  "injectionSelector": "L:text.html.markdown",
+  "patterns": [
+    { "include": "#canvas-fence" },
+    { "include": "#block-fence" },
+    { "include": "#media" },
+    { "include": "#hints" }
+  ],
+  "repository": {
+    "canvas-fence": {
+      "match": "^\\s{0,3}(::::)(canvas|page)?(\\{[^}]*\\})?\\s*$",
+      "captures": {
+        "1": { "name": "punctuation.definition.mdlayout.markdown" },
+        "2": { "name": "keyword.control.mdlayout.markdown" },
+        "3": { "name": "entity.other.attribute-name.mdlayout.markdown" }
+      }
+    },
+    "block-fence": {
+      "match": "^\\s{0,3}(:::)([A-Za-z][\\w-]*)?(\\{[^}]*\\})?\\s*$",
+      "captures": {
+        "1": { "name": "punctuation.definition.mdlayout.markdown" },
+        "2": { "name": "entity.name.section.mdlayout.markdown" },
+        "3": { "name": "entity.other.attribute-name.mdlayout.markdown" }
+      }
+    },
+    "media": {
+      "match": "(!(?:video|audio))(\\()([^)]*)(\\))",
+      "captures": {
+        "1": { "name": "keyword.control.mdlayout.markdown" },
+        "3": { "name": "markup.underline.link.mdlayout.markdown" }
+      }
+    },
+    "hints": {
+      "match": "(?<=[\\])])(\\{[^}\\n]*\\})",
+      "captures": {
+        "1": { "name": "entity.other.attribute-name.mdlayout.markdown" }
+      }
+    }
+  }
+}

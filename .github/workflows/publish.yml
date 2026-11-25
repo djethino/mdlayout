@@ -1,0 +1,29 @@
+name: Publish to npm
+
+# On a tag v<version>: test, then publish @asymptomatik/mdlayout with npm trusted publishing (no token; provenance).
+# The tag must match package.json. The VS Code extension (vscode/) is published from the maintainer's machine.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: The tag matches package.json
+        run: test "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}"
+      - name: Tests
+        run: node --test "test/*.test.js"
+      - name: Publish
+        run: npm publish --access public --provenance

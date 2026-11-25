@@ -1,0 +1,5 @@
+node_modules/
+*.tgz
+vscode/mdlayout/
+vscode/media/
+vscode/*.vsix

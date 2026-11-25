@@ -1,0 +1,41 @@
+{
+  "name": "@asymptomatik/mdlayout",
+  "version": "0.1.0",
+  "description": "Spatial layout extension for Markdown - position blocks, images, and styled content",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./marked": "./src/adapters/marked-plugin.js",
+    "./markdown-it": "./src/adapters/markdown-it-plugin.js"
+  },
+  "files": [
+    "src/",
+    "bin/"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "author": "ASymptOmatik",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djethino/mdlayout.git"
+  },
+  "bugs": {
+    "url": "https://github.com/djethino/mdlayout/issues"
+  },
+  "keywords": [
+    "markdown",
+    "layout",
+    "spatial",
+    "blocks",
+    "canvas",
+    "marked",
+    "markdown-it"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/djethino/mdlayout#readme",
+  "bin": {
+    "mdlayout": "./bin/mdlayout.js"
+  }
+}

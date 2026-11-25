@@ -1,0 +1,4 @@
+# Ce qui ne part pas dans le .vsix
+scripts/**
+**/*.test.js
+.gitignore
