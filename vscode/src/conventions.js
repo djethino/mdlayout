@@ -101,6 +101,15 @@ export function figureOf(hints) {
   return null;
 }
 
+/** A front matter without the settings MarkdownRoxor writes there (`format:`, `background:`, `theme:`, one line each,
+ *  `src/lib/doc/settings.ts`): what is left is the author's. */
+export function withoutSettings(frontMatter) {
+  return String(frontMatter ?? '')
+    .split(/\r?\n/)
+    .filter((line) => !/^(format|background|theme)\s*:/.test(line))
+    .join('\n');
+}
+
 /** The document theme written in a front matter (MarkdownRoxor's `theme: { … }` line and `background:`), validated:
  *  colours are colours, fonts one of three families. `null` when there is neither. Twin of `doc-theme.ts`. */
 export function themeOf(frontMatter) {
@@ -221,7 +230,16 @@ export function markdownItConventions(md) {
     if (state.inlineMode || own(state.env).nested) return;
     const front = state.tokens.find((token) => token.type === 'front_matter');
     // VS Code keeps the front matter's text in `meta.content` (its yamlPreamble.ts); another plugin may keep a string.
-    const found = front && themeOf(typeof front.meta === 'string' ? front.meta : front.meta?.content);
+    const text = front && (typeof front.meta === 'string' ? front.meta : front.meta?.content);
+    const found = front && themeOf(text);
+    // MarkdownRoxor's settings are not content: VS Code shows a front matter as a table by default
+    // (`markdown.preview.frontMatter`), so they leave it once read; the reader's own keys (a title, an author) stay.
+    if (front && typeof text === 'string') {
+      const rest = withoutSettings(text);
+      if (!rest.trim()) front.meta = null;
+      else if (typeof front.meta === 'string') front.meta = rest;
+      else front.meta = { ...front.meta, content: rest };
+    }
     if (!found) return;
     state.tokens.unshift(Object.assign(new state.Token('mdr_theme_open', 'div', 1), { block: true, meta: found }));
     state.tokens.push(Object.assign(new state.Token('mdr_theme_close', 'div', -1), { block: true }));

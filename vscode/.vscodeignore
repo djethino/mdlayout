@@ -4,3 +4,13 @@ example/**
 test/**
 **/*.test.js
 .gitignore
+# Nos notes internes de publication
+PUBLISHING.md
+# Ce que la bibliothèque copiée a de plus que l'aperçu n'en charge (seul adapters/markdown-it-plugin.js est importé)
+mdlayout/index.js
+mdlayout/strip.js
+mdlayout/adapters/marked-plugin.js
+# Les outils d'emballage et de publication (leur verrou)
+tools/**
+# Le dessin de l'icône (le paquet emporte icon.png)
+icon.svg

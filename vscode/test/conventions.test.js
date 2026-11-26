@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 // dans `vscode/`).
 const library = ['../../mdlayout/src', '../../src'].map((dir) => new URL(`${dir}/adapters/markdown-it-plugin.js`, import.meta.url)).find((url) => existsSync(fileURLToPath(url)));
 const { markdownItMdLayout } = await import(library.href);
-import { markdownItConventions, slugsOf, themeOf } from '../src/conventions.js';
+import { markdownItConventions, slugsOf, themeOf, withoutSettings } from '../src/conventions.js';
 
 const reader = () => new MarkdownIt().use(markdownItMdLayout, { embeds: false }).use(markdownItConventions);
 
@@ -138,6 +138,32 @@ test('un fond sans thème : le texte prend le ton qu’il lui faut', () => {
   md.renderer.rules.front_matter = () => '';
   assert.match(md.render('---\nbackground: "#0f172a"\n---\n\nTexte\n'), /class="mdr-themed paper-only dark"/);
   assert.match(md.render('---\nbackground: "#fbf7ee"\n---\n\nTexte\n'), /class="mdr-themed paper-only light"/);
+});
+
+test('le tableau d’en-tête de VS Code ne montre plus les réglages de MarkdownRoxor, seulement ce que l’auteur y a mis', () => {
+  const frontMatter = (md) =>
+    md.block.ruler.before('table', 'front_matter', (state, start, end, silent) => {
+      if (start !== 0 || state.src.slice(0, 4) !== '---\n') return false;
+      let line = 1;
+      while (line < end && state.src.slice(state.bMarks[line], state.eMarks[line]) !== '---') line++;
+      if (silent) return true;
+      state.push('front_matter', '', 0).meta = { content: state.getLines(1, line, 0, false) };
+      state.line = line + 1;
+      return true;
+    });
+  const md = new MarkdownIt().use(frontMatter).use(markdownItMdLayout).use(markdownItConventions);
+  // Comme VS Code (son réglage par défaut, « table ») : rien sans meta, sinon une ligne par clé.
+  md.renderer.rules.front_matter = (tokens, i) => {
+    const meta = tokens[i].meta;
+    if (!meta) return '';
+    return `<table class="frontmatter">${meta.content.split('\n').filter(Boolean).map((line) => `<tr><th>${line.split(':')[0]}</th></tr>`).join('')}</table>\n`;
+  };
+  const ours = md.render('---\nformat: a4\ntheme: { name: "N", text: "#f1f5f0" }\nbackground: "#1b3a33"\n---\n\n# Titre\n');
+  assert.ok(!ours.includes('frontmatter'), ours);
+  assert.match(ours, /mdr-themed/); // le thème, lu avant, s'applique toujours
+  const mixed = md.render('---\ntitle: Le phare\nformat: a4\nauthor: Moi\n---\n\nTexte\n');
+  assert.match(mixed, /<table class="frontmatter"><tr><th>title<\/th><\/tr><tr><th>author<\/th><\/tr><\/table>/);
+  assert.equal(withoutSettings('title: X\r\nformat: a4\r\ntheme: { }\r\nbackground: "#fff"'), 'title: X');
 });
 
 test('aperçu Mermaid : le fichier enveloppé dans un bloc que rien du diagramme ne ferme', async () => {

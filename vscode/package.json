@@ -2,10 +2,11 @@
   "name": "mdlayout",
   "displayName": "mdlayout — Markdown layout",
   "description": "Reads mdlayout and MarkdownRoxor documents in VS Code's Markdown preview: page layout, callouts, footnotes, task lists, table of contents, numbered figures and equations, document themes — and previews standalone Mermaid files.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "asymptomatik",
   "author": "ASymptOmatik",
   "license": "MIT",
+  "icon": "icon.png",
   "private": true,
   "engines": {
     "vscode": "^1.90.0"

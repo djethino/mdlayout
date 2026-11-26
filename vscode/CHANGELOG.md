@@ -1,5 +1,12 @@
 # Changes
 
+## 0.1.3
+
+- An icon.
+- MarkdownRoxor's settings in the front matter (`format`, `background`, `theme`) no longer show in the table VS Code
+  draws from it (`markdown.preview.frontMatter`); the author's own keys still do.
+- The examples on the extension's page keep their image paths as written.
+
 ## 0.1.2
 
 - A reader of mdlayout and MarkdownRoxor documents: free pages, merged and styled table cells, paragraph alignment,

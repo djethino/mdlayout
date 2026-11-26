@@ -1,6 +1,6 @@
 {
   "name": "@asymptomatik/mdlayout",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Spatial layout extension for Markdown - position blocks, images, and styled content",
   "type": "module",
   "main": "./src/index.js",

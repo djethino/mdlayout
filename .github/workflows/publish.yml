@@ -1,8 +1,11 @@
-name: Publish to npm
+name: Publish
 
-# On a tag v<version>: test, then stage @asymptomatik/mdlayout with npm trusted publishing (no token; provenance).
-# The staged version is public only once a maintainer approves it with 2FA (npm stage approve, or npmjs.com).
-# The tag must match package.json. The VS Code extension (vscode/) is published from the maintainer's machine.
+# On a tag v<version>, with trusted publishing only (no stored token):
+# - npm: test, then stage @asymptomatik/mdlayout (provenance); the staged version is public only once a maintainer
+#   approves it with 2FA (npm stage approve, or npmjs.com);
+# - the VS Code extension (vscode/): packaged in a job without OIDC, then published to the Visual Studio Marketplace
+#   and, once the repository variable OPENVSX is "on", to Open VSX.
+# The tag must match both package.json files. The packaging tools are pinned by vscode/tools/package-lock.json.
 
 on:
   push:
@@ -11,11 +14,13 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
-  publish:
+  npm:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -23,8 +28,8 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
           package-manager-cache: false
+          registry-url: https://registry.npmjs.org
       - name: The tag matches package.json
         run: test "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}"
       - name: npm with staged publishing, pinned
@@ -33,3 +38,58 @@ jobs:
         run: node --test "test/*.test.js"
       - name: Stage for approval
         run: npm stage publish --access public --provenance
+
+  vsix:
+    name: Package the extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: The tag matches vscode/package.json
+        run: test "v$(node -p "require('./vscode/package.json').version")" = "${GITHUB_REF_NAME}"
+      - name: Packaging tools, pinned, no install scripts
+        run: npm ci --ignore-scripts --prefix vscode/tools
+      - name: Package
+        working-directory: vscode
+        run: tools/node_modules/.bin/vsce package --no-dependencies --no-rewrite-relative-links --out mdlayout.vsix
+      - name: What the package holds
+        working-directory: vscode
+        run: tools/node_modules/.bin/vsce ls --no-dependencies
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: vsix
+          path: vscode/mdlayout.vsix
+          if-no-files-found: error
+          retention-days: 7
+
+  extension:
+    name: Publish the extension
+    needs: vsix
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Publishing tools, pinned, no install scripts
+        run: npm ci --ignore-scripts --prefix vscode/tools
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: vsix
+          path: dist
+      - name: Visual Studio Marketplace
+        run: vscode/tools/node_modules/.bin/vsce publish --packagePath dist/mdlayout.vsix --oidc
+      - name: Open VSX
+        if: vars.OPENVSX == 'on'
+        run: vscode/tools/node_modules/.bin/ovsx publish dist/mdlayout.vsix --trusted-publishing
