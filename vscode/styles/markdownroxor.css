@@ -1,0 +1,87 @@
+/* The conventions of MarkdownRoxor documents in VS Code's Markdown preview (src/conventions.js). Colours that follow
+   VS Code's light or dark theme mix with `transparent`; the callout colours are MarkdownRoxor's. No script, nothing
+   fetched. */
+
+/* ── Callouts ─────────────────────────────────────────────────── */
+aside.callout {
+  --mdr-callout: #3b82f6;
+  margin: 1em 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border-inline-start: 4px solid var(--mdr-callout);
+  background: color-mix(in srgb, var(--mdr-callout) 9%, transparent);
+}
+aside.callout.tip { --mdr-callout: #22c55e; }
+aside.callout.important { --mdr-callout: #8b5cf6; }
+aside.callout.warning { --mdr-callout: #eab308; }
+aside.callout.caution { --mdr-callout: #ef4444; }
+aside.callout > :last-child { margin-bottom: 0; }
+aside.callout .callout-title {
+  margin: 0 0 4px;
+  color: var(--mdr-callout);
+  font-size: 0.85em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Task lists ───────────────────────────────────────────────── */
+li.task { list-style: none; }
+li.task .task-box { margin: 0 0.4em 0 -1.4em; vertical-align: middle; }
+li.task.done { opacity: 0.75; }
+
+/* ── Table of contents ([[toc]]) ──────────────────────────────── */
+nav.toc {
+  margin: 1em 0;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-radius: 8px;
+}
+nav.toc ol { margin: 0; padding: 0; list-style: none; }
+nav.toc .toc-2 { margin-inline-start: 1em; }
+nav.toc .toc-3 { margin-inline-start: 2em; }
+
+/* ── Footnotes ────────────────────────────────────────────────── */
+sup.footnote-ref a { text-decoration: none; }
+sup.footnote-ref a::before { content: "["; }
+sup.footnote-ref a::after { content: "]"; }
+section.footnotes {
+  margin-top: 2em;
+  padding-top: 0.5em;
+  border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  font-size: 0.9em;
+}
+section.footnotes .footnote-back { text-decoration: none; }
+
+/* ── Numbered figures ─────────────────────────────────────────── */
+figcaption.figcaption { margin-top: 0.4em; font-size: 0.9em; font-style: italic; text-align: center; opacity: 0.85; }
+a.figure-ref { text-decoration: none; }
+.figure-ref.missing { opacity: 0.7; }
+
+/* ── Slide marks ──────────────────────────────────────────────── */
+hr.mdr-slide { border: 0; border-top: 2px dashed color-mix(in srgb, currentColor 30%, transparent); margin: 2em 0; }
+
+/* ── Document theme (front matter `theme:` / `background:`) ───── */
+/* The document's own page: its paper, its colours and fonts, whatever VS Code's theme is. */
+.mdr-themed {
+  margin: 0 -12px;
+  padding: 24px 28px;
+  border-radius: 8px;
+  background: var(--mdr-paper, #ffffff);
+  color: var(--mdr-text, #1a1a2e);
+  font-family: var(--mdr-font, inherit);
+}
+.mdr-themed :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--mdr-heading, inherit);
+  font-family: var(--mdr-heading-font, inherit);
+  border-color: color-mix(in srgb, var(--mdr-text, currentColor) 20%, transparent);
+}
+.mdr-themed a { color: var(--mdr-link, #4f46e5); }
+.mdr-themed :is(code, pre, th) { background: var(--mdr-surface, rgba(0, 0, 0, 0.05)); color: inherit; }
+.mdr-themed pre code { background: none; }
+.mdr-themed blockquote { border-inline-start-color: var(--mdr-accent, currentColor); color: inherit; }
+.mdr-themed :is(td, th, hr) { border-color: color-mix(in srgb, var(--mdr-text, currentColor) 22%, transparent); }
+/* A background without a theme: the paper only, the text kept readable on it. */
+.mdr-themed.paper-only.light { color: #1a1a2e; }
+.mdr-themed.paper-only.dark { color: #e8e8ea; }
+.mdr-themed.paper-only.dark a { color: #93c5fd; }

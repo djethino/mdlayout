@@ -38,3 +38,14 @@ test("le placement fixe tient avec un cycle (a sous b, b sous a)", () => {
   const html = mdlayout("::::canvas{fixed}\n:::a{below b}\nA\n:::\n:::b{below a}\nB\n:::\n::::");
   assert.ok(html.includes("mdl"), html);
 });
+
+test('a video page becomes a link where frames are not allowed (embeds: false)', async () => {
+  const { renderToHTML, parseMedia } = await import('../src/index.js');
+  const video = parseMedia('!video(https://www.youtube.com/watch?v=abc123){width:full}');
+  assert.match(renderToHTML(video), /<iframe/);
+  const link = renderToHTML(video, { embeds: false });
+  assert.ok(!link.includes('<iframe'), link);
+  assert.match(link, /<a class="mdl-media__link" href="https:\/\/www\.youtube\.com\/watch\?v=abc123">▶ youtube\.com<\/a>/);
+  // A video file stays a player: nothing to frame.
+  assert.match(renderToHTML(parseMedia('!video(film.mp4)'), { embeds: false }), /<video src="film\.mp4"/);
+});

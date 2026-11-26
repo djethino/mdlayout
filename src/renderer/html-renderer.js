@@ -30,6 +30,7 @@ import { solveGrid } from '../solver/grid-solver.js';
  *   Injecting unsanitized HTML (e.g. from user-generated markdown) is a security risk (XSS).
  *   Use a sanitizer like DOMPurify on the output before inserting into the DOM.
  * @property {Object.<string, number>} [blockHeights] - Measured block heights for fixed mode (% of canvas)
+ * @property {boolean} [embeds=true] - False: a video page (YouTube, Vimeo, Dailymotion) becomes a link, not a frame
  * @property {boolean} [includeLabels=true] - Include block name labels
  */
 
@@ -201,8 +202,14 @@ function _renderMedia(media, options) {
       innerHtml = `<img src="${_escAttr(media.url)}" alt="${_escAttr(media.alt)}" loading="lazy" />`;
       break;
     case 'video': {
-      // Une page YouTube, Vimeo ou Dailymotion : le lecteur du site, dans un cadre fermé.
+      // Une page YouTube, Vimeo ou Dailymotion : le lecteur du site, dans un cadre fermé — ou, là où les cadres sont
+      // interdits (`embeds: false`, l'aperçu de VS Code), un lien vers la page de la vidéo plutôt qu'un cadre vide.
       const player = embedUrl(media.url);
+      if (player && options.embeds === false) {
+        const host = (media.url.match(/^https:\/\/(?:www\.)?([^/]+)/) || [])[1] || media.url;
+        innerHtml = `<a class="mdl-media__link" href="${_escAttr(media.url)}">▶ ${_esc(media.alt || host)}</a>`;
+        break;
+      }
       innerHtml = player
         ? `<iframe src="${_escAttr(player)}" sandbox="allow-scripts allow-same-origin allow-presentation" allow="fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" loading="lazy"></iframe>`
         : `<video src="${_escAttr(media.url)}" controls></video>`;

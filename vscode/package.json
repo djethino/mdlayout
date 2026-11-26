@@ -1,8 +1,8 @@
 {
   "name": "mdlayout",
   "displayName": "mdlayout — Markdown layout",
-  "description": "Spatial layout for Markdown in the preview: blocks side by side, images and videos with layout hints, styled text — the mdlayout syntax.",
-  "version": "0.1.1",
+  "description": "Reads mdlayout and MarkdownRoxor documents in VS Code's Markdown preview: page layout, callouts, footnotes, task lists, table of contents, numbered figures and equations, document themes — and previews standalone Mermaid files.",
+  "version": "0.1.2",
   "publisher": "asymptomatik",
   "author": "ASymptOmatik",
   "license": "MIT",
@@ -24,12 +24,17 @@
     "type": "git",
     "url": "https://github.com/djethino/mdlayout"
   },
+  "bugs": {
+    "url": "https://github.com/djethino/mdlayout/issues"
+  },
+  "homepage": "https://github.com/djethino/mdlayout#readme",
   "main": "./extension.js",
   "activationEvents": [],
   "contributes": {
     "markdown.markdownItPlugins": true,
     "markdown.previewStyles": [
-      "./media/mdlayout.css"
+      "./media/mdlayout.css",
+      "./styles/markdownroxor.css"
     ],
     "grammars": [
       {
@@ -38,15 +43,59 @@
         "injectTo": [
           "text.html.markdown"
         ]
+      },
+      {
+        "language": "mermaid",
+        "scopeName": "source.mermaid",
+        "path": "./syntaxes/mermaid.tmLanguage.json"
       }
-    ]
+    ],
+    "languages": [
+      {
+        "id": "mermaid",
+        "aliases": [
+          "Mermaid"
+        ],
+        "extensions": [
+          ".mmd",
+          ".mermaid"
+        ],
+        "configuration": "./syntaxes/mermaid.language.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "mdlayout.previewMermaid",
+        "title": "Preview Mermaid Diagram",
+        "category": "mdlayout",
+        "icon": "$(open-preview)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "mdlayout.previewMermaid",
+          "when": "resourceExtname =~ /\\.(mmd|mermaid)$/i",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "mdlayout.previewMermaid",
+          "when": "resourceExtname =~ /\\.(mmd|mermaid)$/i",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "mdlayout.previewMermaid",
+          "when": "resourceExtname =~ /\\.(mmd|mermaid)$/i"
+        }
+      ]
+    }
   },
   "scripts": {
     "build": "node scripts/build.mjs",
     "vscode:prepublish": "node scripts/build.mjs"
-  },
-  "bugs": {
-    "url": "https://github.com/djethino/mdlayout/issues"
-  },
-  "homepage": "https://github.com/djethino/mdlayout#readme"
+  }
 }

@@ -3,6 +3,8 @@ export interface MarkdownItMdLayoutOptions {
   /** Montrer le nom des blocs (d'office, oui). */
   includeLabels?: boolean;
   blockHeights?: Record<string, number>;
+  /** Faux : une page de vidéo en ligne devient un lien, pas un cadre (là où les cadres sont interdits). */
+  embeds?: boolean;
 }
 /** Le greffon : `new MarkdownIt().use(markdownItMdLayout)`. `md` : l'instance de markdown-it. */
 export function markdownItMdLayout(md: unknown, options?: MarkdownItMdLayoutOptions): void;

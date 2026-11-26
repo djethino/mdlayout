@@ -84,8 +84,10 @@ const html = md.render('::::canvas{responsive}
 ');
 ```
 
-Add the base stylesheet once to the page (`generateBaseCSS()` from the main entry). In VS Code, the
-**mdlayout — Markdown layout** extension does both.
+It reads the whole syntax: canvas blocks, free pages (`::::page`), media, styled spans, paragraph alignment
+(`{align:center}`) and tables with merged cells and cell styles. `{ embeds: false }` turns an online video into a link
+where frames are not allowed. Add the stylesheets once to the page (`generateBaseCSS()` and `generatePageCSS()` from
+the main entry). In VS Code, the **mdlayout — Markdown layout** extension does all of it.
 
 ## Syntax
 

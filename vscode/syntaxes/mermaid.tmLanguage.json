@@ -1,0 +1,56 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Mermaid",
+  "scopeName": "source.mermaid",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#directive" },
+    { "include": "#diagram" },
+    { "include": "#keyword" },
+    { "include": "#direction" },
+    { "include": "#string" },
+    { "include": "#label" },
+    { "include": "#arrow" },
+    { "include": "#number" }
+  ],
+  "repository": {
+    "comment": {
+      "match": "%%(?!\\{).*$",
+      "name": "comment.line.percentage.mermaid"
+    },
+    "directive": {
+      "begin": "%%\\{",
+      "end": "\\}%%",
+      "name": "meta.directive.mermaid"
+    },
+    "diagram": {
+      "match": "^\\s*(graph|flowchart|sequenceDiagram|classDiagram(?:-v2)?|stateDiagram(?:-v2)?|erDiagram|gantt|pie|journey|gitGraph|mindmap|timeline|quadrantChart|requirementDiagram|sankey(?:-beta)?|xychart(?:-beta)?|block(?:-beta)?|packet(?:-beta)?|architecture(?:-beta)?|kanban|radar(?:-beta)?|zenuml|C4Context|C4Container|C4Component|C4Dynamic|C4Deployment)\\b",
+      "captures": { "1": { "name": "keyword.control.diagram.mermaid" } }
+    },
+    "keyword": {
+      "match": "\\b(subgraph|end|participant|actor|loop|alt|else|opt|par|and|critical|break|rect|note|over|left of|right of|activate|deactivate|autonumber|class|classDef|style|linkStyle|click|call|href|section|title|accTitle|accDescr|dateFormat|axisFormat|tickInterval|excludes|todayMarker|state|direction|as|commit|branch|checkout|merge|cherry-pick|showData|x-axis|y-axis|line|bar)\\b",
+      "name": "keyword.other.mermaid"
+    },
+    "direction": {
+      "match": "\\b(TB|TD|BT|RL|LR)\\b",
+      "name": "constant.language.direction.mermaid"
+    },
+    "string": {
+      "begin": "\"",
+      "end": "\"",
+      "name": "string.quoted.double.mermaid"
+    },
+    "label": {
+      "match": "\\|[^|\\n]*\\|",
+      "name": "string.unquoted.label.mermaid"
+    },
+    "arrow": {
+      "match": "<?(?:-{2,}|={2,}|-\\.+-|~{3})[>xo]?|-{1,2}>>?|-[x)]|<<?-{1,2}|--[ox]|\\|[o|]--|--[o|]\\{|\\}[o|]--",
+      "name": "keyword.operator.arrow.mermaid"
+    },
+    "number": {
+      "match": "\\b\\d+(?:\\.\\d+)?\\b",
+      "name": "constant.numeric.mermaid"
+    }
+  }
+}

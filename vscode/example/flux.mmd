@@ -1,0 +1,6 @@
+%% Un diagramme seul : le bouton d'aperçu de l'éditeur l'ouvre (mdlayout: Preview Mermaid Diagram).
+flowchart LR
+  A[Appel reçu] --> B{Urgence ?}
+  B -->|oui| C[Transférer au dentiste]
+  B -->|non| D[Proposer un rendez-vous]
+  D --> E((Fin))

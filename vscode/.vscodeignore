@@ -1,4 +1,6 @@
-# Ce qui ne part pas dans le .vsix
+# Ce que la construction écrit, et le dossier d'essai
 scripts/**
+example/**
+test/**
 **/*.test.js
 .gitignore

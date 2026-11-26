@@ -217,6 +217,8 @@ export function resolveStyles(hints) {
       }
 
       default:
+        // `#name` is a label (a figure `#fig-name`, as Quarto writes it), not a style: left to whoever numbers it.
+        if (key.startsWith('#')) break;
         console.warn(`[mdlayout:style-resolver] Unknown style hint: "${key}"`);
         break;
     }
